@@ -15,6 +15,10 @@ public class PlayerController : MonoBehaviour
     private float movementX;
     private float movementY;
 
+    public GameObject jumpscare;
+    public CameraShake cameraShake;
+    public AudioSource scream;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -35,7 +39,7 @@ public class PlayerController : MonoBehaviour
     void SetCountText()
     {
         countText.text = "Count: " + count.ToString();
-        if (count >= 7)
+        if (count >= 9)
         {
             winTextObject.SetActive(true);
         }
@@ -55,5 +59,26 @@ public class PlayerController : MonoBehaviour
             count += 1;
             SetCountText();
         }
+
+        else if (other.gameObject.CompareTag("jumpscare"))
+        {
+            other.gameObject.SetActive(false);
+            count += 1;
+            SetCountText();
+
+            Debug.Log("jumpscare");
+
+            jumpscare.SetActive(true);
+            StartCoroutine(cameraShake.Shake(1f, 8f));
+            scream.Play();
+            StartCoroutine(SetJumpscare());
+            
+        }
+    }
+
+    IEnumerator SetJumpscare()
+    {
+        yield return new WaitForSeconds(1.0f);
+        jumpscare.SetActive(false);
     }
 }
